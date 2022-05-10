@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
+
 @Controller
 @RequestMapping("files")
 public class FileController {
@@ -43,8 +45,9 @@ public class FileController {
     }
 
     @PostMapping("/subir")
-    public String subirArchivos(@RequestParam("archivo")MultipartFile file, RedirectAttributes attr){
-        if(fileService.subirArchivo(file)){
+    public String subirArchivos(@RequestParam("archivo")MultipartFile file, RedirectAttributes attr) throws IOException {
+        MultipartFile file_aux = fileService.formatearArchivo(file,"foto");
+        if(fileService.subirArchivo(file_aux)){
             attr.addFlashAttribute("msg","Archivo subido exitosamente");
         }else{
             attr.addAttribute("alert","El archivo"+file.getOriginalFilename()+"No se pude subir de manera correcta");
